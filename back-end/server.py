@@ -24,12 +24,11 @@ def search_percentage(play_week, title):
 
     # Controleer of er een resultaat is gevonden
     if not result.empty:
-        # Zet het resultaat om naar een lijst van dictionaries (inclusief percentage)
+        # Zet het resultaat om naar een lijst van dictionaries
         result_dict = result[['play_week', 'title', 'percentage']].to_dict(orient='records')
         
-        # Zet play_week om naar DD-MM-YYYY en pas afronding van percentage correct toe
         for item in result_dict:
-            item['play_week'] = item['play_week'].strftime('%d-%m-%Y')
+            item['play_week'] = item['play_week'].strftime('%d-%m-%Y') # Zet play_week om naar DD-MM-YYYY
             item['percentage'] = f"{item['percentage']:.2f}".replace('.', ',')  # Gebruik komma als decimaalteken
 
         return result_dict
