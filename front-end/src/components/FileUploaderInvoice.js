@@ -50,7 +50,7 @@ export default function FileUploader({ onFileUploadSuccess }) {
       <div className="file-upload-wrapper">
         <label className="file-upload-label">
           <UploadCloud size={20} />
-          <span>Bestand kiezen</span>
+          <span>Facturen</span>
           <input type="file" className="hidden" onChange={handleFileChange} />
         </label>
         {file && <p className="file-name">{file.name}</p>}

@@ -1,0 +1,46 @@
+table {
+    width: 80%; /* Zorgt ervoor dat de tabel 80% van de container breedte inneemt */
+    margin: 20px auto; /* Centreert de tabel horizontaal */
+    border-collapse: collapse;
+    font-size: 18px;
+    text-align: left;
+  }
+  
+  th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    color: #333;
+  }
+  
+  h2 {
+    text-align: center; /* Centreert de titel */
+    margin-top: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  p {
+    text-align: center; /* Centreert de tekst */
+    font-size: 18px;
+    color: #666;
+  }
+  
+  .red {
+    background-color: #ffcccc; /* Rood */
+  }
+  
+  .green {
+    background-color: #ccffcc; /* Groen */
+  }
+  
+  .yellow {
+    background-color: #ffffcc; /* Geel */
+  }
+  
+  .gray {
+    background-color: #f2f2f2; /* Grijs */
+  }

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import FileUploader from './components/FileUploader';
+import FileUploaderInvoice from './components/FileUploaderInvoice';
+import FileUploaderPercentage from './components/FileUploaderPercentage'; // Nieuwe component voor percentages
 import InvoiceTable from './components/InvoiceTable';
 import CheckButton from './components/CheckButton';  // Nieuwe knop component
 
@@ -9,6 +10,11 @@ function App() {
   // Functie voor bestand uploaden
   const handleFileUploadSuccess = (data) => {
     setInvoices(data); // Zet de geüploade gegevens in de state
+  };
+
+  // Functie voor percentages uploaden
+  const handlePercentageUploadSuccess = (data) => {
+    console.log("Percentage upload succesvol:", data); // Log de upload voor controle
   };
 
   // Functie voor zoekactie na klikken op de "Controleer" knop
@@ -44,7 +50,8 @@ function App() {
 
   return (
     <div>
-      <FileUploader onFileUploadSuccess={handleFileUploadSuccess} />
+      <FileUploaderInvoice onFileUploadSuccess={handleFileUploadSuccess} />
+      <FileUploaderPercentage onFileUploadSuccess={handlePercentageUploadSuccess} /> {/* Nieuwe component voor percentages */}
       <InvoiceTable invoices={invoices} />
       <CheckButton onSearch={handleSearch} /> {/* De zoekknop */}
     </div>
