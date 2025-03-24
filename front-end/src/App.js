@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import FileUploader from './components/FileUploader';
+import InvoiceTable from './components/InvoiceTable';
 
 function App() {
+  const [invoices, setInvoices] = useState([]); // Opslaan van factuurgegevens
+
+  const handleFileUploadSuccess = (data) => {
+    setInvoices(data); // Zet de geüploade gegevens in de state
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <FileUploader onFileUploadSuccess={handleFileUploadSuccess} />
+      <InvoiceTable invoices={invoices} /> {/* Geef de facturen door */}
     </div>
   );
 }

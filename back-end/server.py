@@ -1,9 +1,31 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pandas as pd
 import re
 from rapidfuzz import fuzz, process
 
 app = Flask(__name__)
+
+CORS(app)
+
+# Functie om de Excel-gegevens te laden
+def read_invoice(bestand):
+    try:
+        # Lees het Excel-bestand in
+        df = pd.read_excel(bestand)
+    except Exception as e:
+        return {"error": f"Kan bestand niet laden: {str(e)}"}
+
+    # Benodigde kolommen
+    kolommen_nodig = ['frm_perc', 'master_title_description', 'play_week']
+    
+    # Controleer of alle kolommen aanwezig zijn
+    for kolom in kolommen_nodig:
+        if kolom not in df.columns:
+            return {"error": f"Kolom '{kolom}' ontbreekt in het bestand"}
+
+    # Selecteer en retourneer de data als JSON
+    return df[['frm_perc', 'master_title_description', 'play_week']].to_dict(orient='records')
 
 def clean_title(title):
     """ Verwijdert haakjes en hun inhoud uit de titel """
@@ -41,6 +63,22 @@ def search_percentage(play_week, title):
         return result.to_dict(orient='records')
 
     return {"message": "Geen resultaten gevonden."}
+
+# Route voor bestand uploaden
+@app.route('/upload', methods=['POST'])
+def upload_invoice():
+    if 'file' not in request.files:
+        return jsonify({"error": "Geen bestand geüpload"}), 400
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({"error": "Geen bestand geselecteerd"}), 400
+
+    # Voer de lees_facturen functie uit
+    invoice_data = read_invoice(file)
+    
+    return jsonify(invoice_data)
 
 @app.route('/search', methods=['POST'])
 def search_endpoint(): 
