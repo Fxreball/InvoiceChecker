@@ -1,0 +1,19 @@
+.header {
+    background-color: #0c0c0c; /* Blauwe achtergrondkleur */
+    color: white; /* Witte tekstkleur */
+    padding: 20px; /* Ruimte rondom de header */
+    text-align: center; /* Centreert de tekst */
+    display: flex; /* Zorgt ervoor dat de inhoud naast elkaar wordt geplaatst */
+    align-items: center; /* Centreert de inhoud verticaal */
+    justify-content: flex-start; /* Plaatst de inhoud aan de linkerkant */
+  }
+  
+  .header h1 {
+    margin: 0; /* Verwijdert standaard marges */
+    font-size: 24px; /* Tekstgrootte */
+  }
+  
+  .logo {
+    height: 40px; /* Hoogte van het logo */
+    margin-right: 10px; /* Ruimte tussen het logo en de tekst */
+  }

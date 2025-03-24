@@ -1,0 +1,21 @@
+.check-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #2563eb;
+    color: white;
+    font-weight: 500;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    width: 8rem; /* Zorgt ervoor dat de knop dezelfde breedte heeft */
+    text-align: center;
+    margin: 1rem auto; /* Zorgt voor ruimte boven de knop en centreert de knop */
+    border: none; /* Verwijdert de rand */
+  }
+  
+  .check-button:hover {
+    background-color: #1e40af;
+  }

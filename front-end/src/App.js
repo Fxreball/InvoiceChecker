@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Header from './components/Header';
 import FileUploaderInvoice from './components/FileUploaderInvoice';
 import FileUploaderPercentage from './components/FileUploaderPercentage'; // Nieuwe component voor percentages
 import InvoiceTable from './components/InvoiceTable';
@@ -35,7 +36,7 @@ function App() {
             const foundData = data[index];
             return {
               ...invoice,
-              found_percentage: foundData?.percentage || 'Geen resultaat',
+              found_percentage: foundData?.percentage || 'Niet gevonden',
             };
           });
         });
@@ -50,10 +51,11 @@ function App() {
 
   return (
     <div>
+      <Header></Header>
       <FileUploaderInvoice onFileUploadSuccess={handleFileUploadSuccess} />
-      <FileUploaderPercentage onFileUploadSuccess={handlePercentageUploadSuccess} /> {/* Nieuwe component voor percentages */}
+      <FileUploaderPercentage onFileUploadSuccess={handlePercentageUploadSuccess} />
+      <CheckButton onSearch={handleSearch} />
       <InvoiceTable invoices={invoices} />
-      <CheckButton onSearch={handleSearch} /> {/* De zoekknop */}
     </div>
   );
 }
