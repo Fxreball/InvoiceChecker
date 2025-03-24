@@ -24,6 +24,9 @@ def read_invoice(bestand):
         if kolom not in df.columns:
             return {"error": f"Kolom '{kolom}' ontbreekt in het bestand"}
 
+    # Zet de 'play_week' kolom om naar datetime en formateer naar DD_MM_YYYY
+    df['play_week'] = pd.to_datetime(df['play_week'], errors='coerce').dt.strftime('%d-%m-%Y')
+
     # Selecteer en retourneer de data als JSON
     return df[['frm_perc', 'master_title_description', 'play_week']].to_dict(orient='records')
 
@@ -54,10 +57,10 @@ def search_percentage(play_week, title):
     # Filter alleen de juiste speeldatum
     df_filtered = df[df['play_week'] == play_week]
 
-    # Fuzzy matchen op titel
-    best_match = process.extractOne(title, df_filtered['title'], scorer=fuzz.ratio)
+    # Fuzzy matchen op titel (met een lagere drempel)
+    best_match = process.extractOne(title, df_filtered['title'], scorer=fuzz.partial_ratio)  # Gebruik een andere scorer voor gedeeltelijke overeenkomsten
 
-    if best_match and best_match[1] >= 60:  # 70% match drempel
+    if best_match and best_match[1] >= 70:  
         matched_title = best_match[0]
         result = df_filtered[df_filtered['title'] == matched_title]
         return result.to_dict(orient='records')
@@ -101,7 +104,8 @@ def search_endpoint():
                 results.append({"play_week": play_week, "title": title, "message": "Geen resultaten gevonden."})
         else:
             results.append({"error": "Ongeldige invoer", "data": item})
-
+    
+    print(results)
     return jsonify(results)
 
 @app.route('/', methods=['GET'])

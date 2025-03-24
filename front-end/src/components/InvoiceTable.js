@@ -1,6 +1,4 @@
 export default function InvoiceTable({ invoices }) {
-    console.log(invoices); // Controleer of de data hier zichtbaar is
-  
     return (
       <div>
         <h2>Facturen</h2>
@@ -10,17 +8,19 @@ export default function InvoiceTable({ invoices }) {
           <table>
             <thead>
               <tr>
-                <th>Percentage</th>
                 <th>Titel</th>
                 <th>Speelweek</th>
+                <th>Percentage</th>
+                <th>Gevonden Percentage</th> {/* Nieuwe kolom */}
               </tr>
             </thead>
             <tbody>
               {invoices.map((invoice, index) => (
                 <tr key={index}>
-                  <td>{invoice.frm_perc}</td>
                   <td>{invoice.master_title_description}</td>
                   <td>{invoice.play_week}</td>
+                  <td>{invoice.frm_perc}</td>
+                  <td>{invoice.found_percentage || 'N/A'}</td> {/* Nieuwe kolom */}
                 </tr>
               ))}
             </tbody>
