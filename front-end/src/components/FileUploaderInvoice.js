@@ -13,10 +13,12 @@ export default function FileUploader({ onFileUploadSuccess }) {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     // Als er een bestand is geselecteerd, wordt automatisch geüpload
     if (file) {
       handleFileUpload();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]); // Dit wordt uitgevoerd elke keer dat de 'file' verandert
 
   const handleFileUpload = async () => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { UploadCloud } from "lucide-react";
 import "./FileUploader.css";
 
@@ -12,14 +12,7 @@ export default function PercentageUploader({ onFileUploadSuccess }) {
     }
   };
 
-  useEffect(() => {
-    // Als er een bestand is geselecteerd, wordt automatisch geüpload
-    if (file) {
-      handleFileUpload();
-    }
-  }, [file]); // Dit wordt uitgevoerd elke keer dat de 'file' verandert
-
-  const handleFileUpload = async () => {
+  const handleFileUpload = useCallback(async () => {
     if (!file) {
       return; // Geen bestand, geen upload
     }
@@ -43,7 +36,14 @@ export default function PercentageUploader({ onFileUploadSuccess }) {
       console.error("Error tijdens bestand upload:", error);
       alert("Er is iets misgegaan bij het uploaden.");
     }
-  };
+  }, [file, onFileUploadSuccess]); // Voeg 'file' en 'onFileUploadSuccess' toe als afhankelijkheden
+
+  useEffect(() => {
+    // Als er een bestand is geselecteerd, wordt automatisch geüpload
+    if (file) {
+      handleFileUpload();
+    }
+  }, [file, handleFileUpload]); // Voeg 'handleFileUpload' toe aan de afhankelijkhedenlijst
 
   return (
     <div className="file-uploader-container">
