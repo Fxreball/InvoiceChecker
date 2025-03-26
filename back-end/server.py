@@ -7,11 +7,7 @@ import os
 
 app = Flask(__name__)
 
-CORS(app, resources={
-    r"/*": {
-        "origins": ["https://facturen.owencoenraad.nl", "http://188.245.162.209:8082"]
-    }
-})
+CORS(app, origins=["facturen.owencoenraad.nl"])
 
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
