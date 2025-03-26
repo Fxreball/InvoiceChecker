@@ -30,7 +30,7 @@ export default function FileUploader({ onFileUploadSuccess }) {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://188.245.162.209:5000/upload", {
+      const response = await fetch("https://api.owencoenraad.nl/upload", {
         method: "POST",
         body: formData,
       });
