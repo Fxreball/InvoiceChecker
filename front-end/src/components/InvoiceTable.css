@@ -6,13 +6,13 @@ table {
   text-align: left;
   overflow: hidden;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ddd; /* Buitengrens van de tabel */
+  border: 1px solid #ddd;
   table-layout: fixed;
 }
 
 th, td {
   padding: 14px;
-  border: 1px solid #ddd; /* Verticale en horizontale lijnen */
+  border: 1px solid #ddd;
 }
 
 th {
@@ -21,10 +21,10 @@ th {
   font-weight: bold;
 }
 
-th:nth-child(1), td:nth-child(1) { width: 30%; } /* Eerste kolom */
-th:nth-child(2), td:nth-child(2) { width: 4%; text-align: center;  } /* Tweede kolom */
-th:nth-child(3), td:nth-child(3) { width: 10%; } /* Derde kolom */
-th:nth-child(4), td:nth-child(4) { width: 10%; } /* Vierde kolom */
+th:nth-child(1), td:nth-child(1) { width: 30%; }
+th:nth-child(2), td:nth-child(2) { width: 4%; text-align: center;  } 
+th:nth-child(3), td:nth-child(3) { width: 10%; } 
+th:nth-child(4), td:nth-child(4) { width: 10%; }
 
 
 td {
