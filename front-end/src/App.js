@@ -21,7 +21,7 @@ function App() {
   // Functie voor zoekactie na klikken op de "Controleer" knop
   const handleSearch = async () => {
     try {
-      const response = await fetch("http://188.245.162.209:5000/search", {
+      const response = await fetch("https://api.owencoenraad.nl:5000/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
