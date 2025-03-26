@@ -21,7 +21,7 @@ export default function PercentageUploader({ onFileUploadSuccess }) {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:5000/upload-percentages", {
+      const response = await fetch("http://188.245.162.209:5000/upload-percentages", {
         method: "POST",
         body: formData,
       });
