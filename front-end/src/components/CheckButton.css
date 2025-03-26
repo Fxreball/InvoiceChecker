@@ -14,6 +14,7 @@
     text-align: center;
     margin: 1rem auto; /* Zorgt voor ruimte boven de knop en centreert de knop */
     border: none; /* Verwijdert de rand */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
   
   .check-button:hover {

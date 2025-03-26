@@ -9,6 +9,7 @@
     max-width: 400px;
     margin: 1rem auto; /* Zorgt voor ruimte tussen de containers */
     background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
   
   .file-upload-wrapper {
@@ -33,6 +34,7 @@
     transition: background-color 0.2s, transform 0.1s;
     width: 10rem; /* Zorgt ervoor dat de knoppen even groot zijn */
     text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
   
   .file-upload-label:hover {
@@ -41,7 +43,7 @@
   
   .file-name {
     color: #374151;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 500;
     white-space: nowrap;
   }

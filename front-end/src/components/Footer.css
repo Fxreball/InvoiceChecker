@@ -1,0 +1,24 @@
+.footer {
+    position: relative;
+    margin-top: auto; 
+    width: 100%;
+    background: transparent;
+    color: #494949;
+    text-align: center;
+    padding: 20px 0;
+  }
+  
+  .main-content {
+    flex: 1; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+@media (max-width: 600px) {
+  .footer {
+    font-size: 0.7rem;
+  }
+}
+  

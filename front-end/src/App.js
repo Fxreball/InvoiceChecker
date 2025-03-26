@@ -1,5 +1,7 @@
 import { useState } from "react";
+import './index.css';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import FileUploaderInvoice from './components/FileUploaderInvoice';
 import FileUploaderPercentage from './components/FileUploaderPercentage'; // Nieuwe component voor percentages
 import InvoiceTable from './components/InvoiceTable';
@@ -51,11 +53,14 @@ function App() {
 
   return (
     <div>
-      <Header></Header>
-      <FileUploaderInvoice onFileUploadSuccess={handleFileUploadSuccess} />
-      <FileUploaderPercentage onFileUploadSuccess={handlePercentageUploadSuccess} />
-      <CheckButton onSearch={handleSearch} />
-      <InvoiceTable invoices={invoices} />
+      <Header />
+        <div className="content">
+          <FileUploaderInvoice onFileUploadSuccess={handleFileUploadSuccess} />
+          <FileUploaderPercentage onFileUploadSuccess={handlePercentageUploadSuccess} />
+          <CheckButton onSearch={handleSearch} />
+          <InvoiceTable invoices={invoices} />
+        </div>
+      <Footer />
     </div>
   );
 }

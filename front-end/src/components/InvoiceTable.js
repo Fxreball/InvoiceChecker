@@ -2,23 +2,19 @@ import './InvoiceTable.css';
 
 export default function InvoiceTable({ invoices }) {
   const getCellClass = (invoice) => {
-    if (invoice.found_percentage === 'Geen resultaat') {
+    if (!invoice.found_percentage || invoice.found_percentage === 'Geen resultaat') {
       return 'gray';
     }
+
     const foundPercentage = parseFloat(invoice.found_percentage);
     const invoicePercentage = parseFloat(invoice.frm_perc);
 
     if (isNaN(foundPercentage) || isNaN(invoicePercentage)) {
       return 'gray';
     }
-
-    if (foundPercentage < invoicePercentage) {
-      return 'red';
-    } else if (foundPercentage === invoicePercentage) {
-      return 'green';
-    } else if (foundPercentage > invoicePercentage) {
-      return 'yellow';
-    }
+    return foundPercentage < invoicePercentage ? 'red' 
+         : foundPercentage === invoicePercentage ? 'green' 
+         : 'yellow';
   };
 
   return (
@@ -33,18 +29,18 @@ export default function InvoiceTable({ invoices }) {
               <th>Titel</th>
               <th>Speelweek</th>
               <th>Factuur percentage</th>
-              <th>Werkelijk percentage</th> {/* Nieuwe kolom */}
+              <th>Werkelijk percentage</th>
             </tr>
           </thead>
           <tbody>
             {invoices.map((invoice, index) => (
               <tr key={index}>
-                <td>{invoice.master_title_description}</td>
-                <td>{invoice.play_week}</td>
-                <td>{invoice.frm_perc}</td>
+                <td>{invoice.master_title_description || 'N/A'}</td>
+                <td>{invoice.play_week || 'N/A'}</td>
+                <td>{invoice.frm_perc || 'N/A'}</td>
                 <td className={getCellClass(invoice)}>
-                  {invoice.found_percentage || 'N/A'}
-                </td> {/* Nieuwe kolom */}
+                  {invoice.found_percentage || 'Nog te controleren'}
+                </td>
               </tr>
             ))}
           </tbody>
