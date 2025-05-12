@@ -106,6 +106,23 @@ def upload_percentages():
         return jsonify({"message": "Bestand succesvol geüpload"}), 200
     except Exception as e:
         return jsonify({"error": f"Kan bestand niet opslaan: {str(e)}"}), 500
+    
+@app.route('/upload-recettes', methods=['POST'])
+def upload_recettes():
+    if 'file' not in request.files:
+        return jsonify({"error": "Geen bestand geüpload"}), 400
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({"error": "Geen bestand geselecteerd"}), 400
+
+    try:
+        file_path = os.path.join(UPLOAD_FOLDER, 'recettes.xlsx')
+        file.save(file_path)
+        return jsonify({"message": "Bestand succesvol geüpload"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Kan bestand niet opslaan: {str(e)}"}), 500
 
 @app.route('/search', methods=['POST'])
 def search_endpoint(): 

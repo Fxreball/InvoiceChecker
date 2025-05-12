@@ -3,24 +3,26 @@ import './index.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import FileUploaderInvoice from './components/FileUploaderInvoice';
-import FileUploaderPercentage from './components/FileUploaderPercentage'; // Nieuwe component voor percentages
+import FileUploaderPercentage from './components/FileUploaderPercentage';
+import FileUploaderMaccs from './components/FileUploaderMaccs'; // Toegevoegd: uploader voor recettes
 import InvoiceTable from './components/InvoiceTable';
-import CheckButton from './components/CheckButton';  // Nieuwe knop component
+import CheckButton from './components/CheckButton';
 
 function App() {
-  const [invoices, setInvoices] = useState([]); // Opslaan van factuurgegevens
+  const [invoices, setInvoices] = useState([]);
 
-  // Functie voor bestand uploaden
   const handleFileUploadSuccess = (data) => {
-    setInvoices(data); // Zet de geüploade gegevens in de state
+    setInvoices(data);
   };
 
-  // Functie voor percentages uploaden
   const handlePercentageUploadSuccess = (data) => {
-    console.log("Percentage upload succesvol:", data); // Log de upload voor controle
+    console.log("Percentage upload succesvol:", data);
   };
 
-  // Functie voor zoekactie na klikken op de "Controleer" knop
+  const handleMaccsUploadSuccess = (data) => {
+    console.log("Recettes upload succesvol:", data);
+  };
+
   const handleSearch = async () => {
     try {
       const response = await fetch("https://api.owencoenraad.nl/search", {
@@ -39,6 +41,7 @@ function App() {
             return {
               ...invoice,
               found_percentage: foundData?.percentage || 'Niet gevonden',
+              found_boxoffice: foundData?.boxoffice || 'N/A'
             };
           });
         });
@@ -54,12 +57,13 @@ function App() {
   return (
     <div>
       <Header />
-        <div className="content">
-          <FileUploaderInvoice onFileUploadSuccess={handleFileUploadSuccess} />
-          <FileUploaderPercentage onFileUploadSuccess={handlePercentageUploadSuccess} />
-          <CheckButton onSearch={handleSearch} />
-          <InvoiceTable invoices={invoices} />
-        </div>
+      <div className="content">
+        <FileUploaderInvoice onFileUploadSuccess={handleFileUploadSuccess} />
+        <FileUploaderPercentage onFileUploadSuccess={handlePercentageUploadSuccess} />
+        <FileUploaderMaccs onFileUploadSuccess={handleMaccsUploadSuccess} />
+        <CheckButton onSearch={handleSearch} />
+        <InvoiceTable invoices={invoices} />
+      </div>
       <Footer />
     </div>
   );
