@@ -62,7 +62,7 @@ export default function InvoiceTable({ invoices }) {
                 </td>
                 <td>{invoice.boxoffice || 'N/A'}</td>
                 <td className={getBoxofficeCellClass(invoice)}>
-                  {invoice.found_boxoffice || 'N/A'}
+                  {invoice.found_boxoffice || 'Nog te controleren'}
                 </td>
               </tr>
             ))}
