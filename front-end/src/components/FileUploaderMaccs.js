@@ -19,7 +19,7 @@ export default function RecetteUploader({ onFileUploadSuccess }) {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:5000/upload-recettes", {
+      const response = await fetch("https://api.owencoenraad.nl/upload-recettes", {
         method: "POST",
         body: formData,
       });
@@ -47,7 +47,7 @@ export default function RecetteUploader({ onFileUploadSuccess }) {
       <div className="file-upload-wrapper">
         <label className="file-upload-label">
           <UploadCloud size={20} />
-          <span>Recettes bestand</span>
+          <span>MaccsBox</span>
           <input type="file" className="hidden" onChange={handleFileChange} />
         </label>
         {file && <p className="file-name">{file.name}</p>}

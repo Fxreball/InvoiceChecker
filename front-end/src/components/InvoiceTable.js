@@ -17,6 +17,23 @@ export default function InvoiceTable({ invoices }) {
          : 'yellow';
   };
 
+  const getBoxofficeCellClass = (invoice) => {
+    if (!invoice.found_boxoffice || invoice.found_boxoffice === 'Niet gevonden') {
+      return 'gray';
+    }
+
+    const foundBoxoffice = parseFloat(invoice.found_boxoffice);
+    const invoiceBoxoffice = parseFloat(invoice.boxoffice);
+
+    if (isNaN(foundBoxoffice) || isNaN(invoiceBoxoffice)) {
+      return 'gray';
+    }
+
+    return foundBoxoffice < invoiceBoxoffice ? 'yellow' 
+         : foundBoxoffice === invoiceBoxoffice ? 'green' 
+         : 'red';
+  };
+
   return (
     <div>
       <h2>Facturen</h2>
@@ -30,8 +47,8 @@ export default function InvoiceTable({ invoices }) {
               <th>Speelweek</th>
               <th>Factuur percentage</th>
               <th>Werkelijk percentage</th>
-              <th>Factuur recettes</th>
-              <th>Werkelijke recettes</th>
+              <th>Factuur Box office</th>
+              <th>Werkelijk Box office</th>
             </tr>
           </thead>
           <tbody>
@@ -44,6 +61,9 @@ export default function InvoiceTable({ invoices }) {
                   {invoice.found_percentage || 'Nog te controleren'}
                 </td>
                 <td>{invoice.boxoffice || 'N/A'}</td>
+                <td className={getBoxofficeCellClass(invoice)}>
+                  {invoice.found_boxoffice || 'N/A'}
+                </td>
               </tr>
             ))}
           </tbody>

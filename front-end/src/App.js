@@ -25,14 +25,14 @@ function App() {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch("https://api.owencoenraad.nl/search", {
+      const response = await fetch("http://localhost:5000/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(invoices),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         setInvoices(prevInvoices => {
@@ -41,7 +41,7 @@ function App() {
             return {
               ...invoice,
               found_percentage: foundData?.percentage || 'Niet gevonden',
-              found_boxoffice: foundData?.boxoffice || 'N/A'
+              found_boxoffice: foundData?.boxoffice || 'Niet gevonden', // Hier voeg je de gevonden boxoffice toe
             };
           });
         });
@@ -53,6 +53,7 @@ function App() {
       alert("Er is iets misgegaan bij het zoeken.");
     }
   };
+  
 
   return (
     <div>

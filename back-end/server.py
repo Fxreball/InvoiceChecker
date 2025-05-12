@@ -74,6 +74,33 @@ def search_percentage(play_week, title):
 
     return {"message": "Geen resultaten gevonden."}
 
+def search_boxoffice(play_week, title):
+    file = os.path.join(UPLOAD_FOLDER, 'recettes.xlsx')
+
+    if not os.path.exists(file):
+        return {"error": "Recettes-bestand niet gevonden."}
+
+    try:
+        df = pd.read_excel(file, usecols=['Start Datum', 'Titel', 'BOR Rec.'])
+    except Exception as e:
+        return {"error": f"Fout bij lezen van recettes-bestand: {str(e)}"}
+
+    df['Start Datum'] = pd.to_datetime(df['Start Datum'], errors='coerce').dt.strftime('%d-%m-%Y')
+
+    play_week = pd.to_datetime(play_week, format='%d-%m-%Y').strftime('%d-%m-%Y')
+
+    df_filtered = df[df['Start Datum'] == play_week]
+
+    best_match = process.extractOne(title, df_filtered['Titel'], scorer=fuzz.partial_ratio)
+
+    if best_match and best_match[1] >= 70:
+        matched_title = best_match[0]
+        result = df_filtered[df_filtered['Titel'] == matched_title]
+        return result[['Start Datum', 'Titel', 'BOR Rec.']].to_dict(orient='records')
+
+    return {"message": "Geen boxoffice gevonden."}
+
+
 # Route voor bestand uploaden
 @app.route('/upload', methods=['POST'])
 def upload_invoice():
@@ -138,16 +165,31 @@ def search_endpoint():
         play_week = item.get('play_week')
 
         if title and play_week:
-            result = search_percentage(play_week, title)
-            if isinstance(result, list) and result:
-                results.extend(result)
+            percentage_result = search_percentage(play_week, title)
+            boxoffice_result = search_boxoffice(play_week, title)
+
+            combined_result = {
+                "play_week": play_week,
+                "title": title
+            }
+
+            if isinstance(percentage_result, list) and percentage_result:
+                combined_result["percentage"] = percentage_result[0].get("percentage")
             else:
-                results.append({"play_week": play_week, "title": title, "message": "Geen resultaten gevonden."})
+                combined_result["percentage"] = "Niet gevonden"
+
+            if isinstance(boxoffice_result, list) and boxoffice_result:
+                combined_result["boxoffice"] = boxoffice_result[0].get("BOR Rec.")
+            else:
+                combined_result["boxoffice"] = "Niet gevonden"
+
+            results.append(combined_result)
+
         else:
             results.append({"error": "Ongeldige invoer", "data": item})
     
-    print(results)
     return jsonify(results)
+
 
 @app.route('/', methods=['GET'])
 def home():
