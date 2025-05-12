@@ -30,6 +30,8 @@ export default function InvoiceTable({ invoices }) {
               <th>Speelweek</th>
               <th>Factuur percentage</th>
               <th>Werkelijk percentage</th>
+              <th>Factuur recettes</th>
+              <th>Werkelijke recettes</th>
             </tr>
           </thead>
           <tbody>
@@ -41,6 +43,7 @@ export default function InvoiceTable({ invoices }) {
                 <td className={getCellClass(invoice)}>
                   {invoice.found_percentage || 'Nog te controleren'}
                 </td>
+                <td>{invoice.boxoffice || 'N/A'}</td>
               </tr>
             ))}
           </tbody>

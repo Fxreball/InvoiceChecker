@@ -17,11 +17,12 @@ def read_invoice(bestand):
     try:
         # Lees het Excel-bestand in
         df = pd.read_excel(bestand)
+        print(df.columns.tolist())
     except Exception as e:
         return {"error": f"Kan bestand niet laden: {str(e)}"}
 
     # Benodigde kolommen
-    kolommen_nodig = ['frm_perc', 'master_title_description', 'play_week']
+    kolommen_nodig = ['frm_perc', 'master_title_description', 'play_week', 'boxoffice']
     
     # Controleer of alle kolommen aanwezig zijn
     for kolom in kolommen_nodig:
@@ -31,8 +32,10 @@ def read_invoice(bestand):
     # Zet de 'play_week' kolom om naar datetime en formateer naar DD_MM_YYYY
     df['play_week'] = pd.to_datetime(df['play_week'], errors='coerce').dt.strftime('%d-%m-%Y')
 
+    print(df['boxoffice'].head())
+
     # Selecteer en retourneer de data als JSON
-    return df[['frm_perc', 'master_title_description', 'play_week']].to_dict(orient='records')
+    return df[['frm_perc', 'master_title_description', 'play_week', 'boxoffice']].to_dict(orient='records')
 
 def clean_title(title):
     """ Verwijdert haakjes en hun inhoud uit de titel """
