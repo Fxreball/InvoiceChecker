@@ -1,0 +1,35 @@
+name: Deploy React + Flask via Docker
+
+on:
+  push:
+    branches: [ development ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: SSH into Azure VM and deploy Docker containers
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            PROJECT_DIR="/home/${{ secrets.VPS_USERNAME }}/repositories/invoicechecker"
+
+            if [ ! -d "$PROJECT_DIR/.git" ]; then
+              git clone https://github.com/${{ github.repository }} $PROJECT_DIR
+            fi
+
+            cd $PROJECT_DIR
+            git pull origin development
+
+            echo "Stopping specific containers..."
+            sudo docker-compose stop invoicechecker-frontend invoicechecker-backend
+
+            echo "Rebuilding and starting specific containers..."
+            sudo docker-compose up -d --build invoicechecker-frontend invoicechecker-backend
