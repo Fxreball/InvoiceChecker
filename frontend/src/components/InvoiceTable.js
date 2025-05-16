@@ -36,7 +36,7 @@ export default function InvoiceTable({ invoices }) {
 
   return (
     <div>
-      <h2>Facturen</h2>
+      <h2>Test</h2>
       {invoices.length === 0 ? (
         <p>Geen facturen beschikbaar.</p>
       ) : (
