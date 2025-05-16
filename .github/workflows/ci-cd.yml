@@ -31,5 +31,8 @@ jobs:
             echo "Stopping specific containers..."
             echo "${{ secrets.VPS_PASSWORD }}" | sudo -S docker stop invoicechecker-frontend invoicechecker-backend
 
+            echo "Removing old images..."
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S docker remove invoicechecker-frontend invoicechecker-backend
+
             echo "Rebuilding and starting specific containers..."
             echo "${{ secrets.VPS_PASSWORD }}" | sudo -S docker-compose up -d --build invoicechecker-frontend invoicechecker-backend
