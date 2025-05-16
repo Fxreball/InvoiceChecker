@@ -1,0 +1,55 @@
+name: Deploy Foroxity facturen applicatie
+
+on:
+  push:
+    branches: [ development ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: SSH into VPS and deploy Docker containers
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            PROJECT_DIR="/home/${{ secrets.VPS_USERNAME }}/repositories/invoicechecker"
+
+            if [ ! -d "$PROJECT_DIR/.git" ]; then
+              git clone https://github.com/${{ github.repository }} $PROJECT_DIR
+            fi
+
+            cd $PROJECT_DIR
+            git pull origin development
+
+            echo "Stopping specific containers..."
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S docker stop invoicechecker-frontend invoicechecker-backend
+
+            echo "Removing old images..."
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S docker remove invoicechecker-frontend invoicechecker-backend
+
+            echo "Rebuilding and starting specific containers..."
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S docker-compose up -d --build invoicechecker-frontend invoicechecker-backend
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.mail.me.com
+          server_port: 587
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: Workflow ${{ github.workflow }} afgerond
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: GitHub - Fxreball
+          body: |
+            Workflow: '${{ github.workflow }}' is voltooid.

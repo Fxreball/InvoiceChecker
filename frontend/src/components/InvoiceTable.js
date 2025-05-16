@@ -34,6 +34,12 @@ export default function InvoiceTable({ invoices }) {
          : 'red';
   };
 
+  const formatPercentage = (value) =>
+    value && !isNaN(value) ? `${parseFloat(value)}%` : value;
+
+  const formatEuro = (value) =>
+    value && !isNaN(value) ? `€${parseFloat(value).toLocaleString('nl-NL')}` : value;
+
   return (
     <div>
       <h2>Facturen</h2>
@@ -56,13 +62,13 @@ export default function InvoiceTable({ invoices }) {
               <tr key={index}>
                 <td>{invoice.master_title_description || 'N/A'}</td>
                 <td>{invoice.play_week || 'N/A'}</td>
-                <td>{invoice.frm_perc || 'N/A'}</td>
+                <td>{formatPercentage(invoice.frm_perc) || 'N/A'}</td>
                 <td className={getCellClass(invoice)}>
-                  {invoice.found_percentage || 'Nog te controleren'}
+                  {formatPercentage(invoice.found_percentage) || 'Nog te controleren'}
                 </td>
-                <td>{invoice.boxoffice || 'N/A'}</td>
+                <td>{formatEuro(invoice.boxoffice) || 'N/A'}</td>
                 <td className={getBoxofficeCellClass(invoice)}>
-                  {invoice.found_boxoffice || 'Nog te controleren'}
+                  {formatEuro(invoice.found_boxoffice) || 'Nog te controleren'}
                 </td>
               </tr>
             ))}
