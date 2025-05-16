@@ -50,6 +50,6 @@ jobs:
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: Workflow ${{ github.workflow }} afgerond
           to: ${{ secrets.NOTIFY_EMAIL }}
-          from: HelloWorld-Owen Updates
+          from: GitHub - Fxreball
           body: |
             Workflow: ${{ github.workflow }} is voltooid.
