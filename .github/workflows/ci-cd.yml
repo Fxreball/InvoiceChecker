@@ -1,4 +1,4 @@
-name: Deploy React + Flask via Docker
+name: Deploy Foroxity facturen applicatie
 
 on:
   push:
@@ -52,4 +52,4 @@ jobs:
           to: ${{ secrets.NOTIFY_EMAIL }}
           from: GitHub - Fxreball
           body: |
-            Workflow: ${{ github.workflow }} is voltooid.
+            Workflow: '${{ github.workflow }}' is voltooid.
