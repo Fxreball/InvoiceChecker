@@ -6,7 +6,7 @@ services:
     ports:
       - "8082:80"
     depends_on:
-      - backend
+      - invoicechecker-backend
     restart: always
 
   invoicechecker-backend:
