@@ -25,7 +25,7 @@ function App() {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch("http://api.owencoenraad.nl/search", {
+      const response = await fetch("https://api.owencoenraad.nl/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
