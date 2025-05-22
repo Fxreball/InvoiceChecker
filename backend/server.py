@@ -85,12 +85,22 @@ def search_boxoffice(play_week, title):
     except Exception as e:
         return {"error": f"Fout bij lezen van recettes-bestand: {str(e)}"}
 
-    df['Start Datum'] = pd.to_datetime(df['Start Datum'], errors='coerce').dt.strftime('%d-%m-%Y')
+    # Zorg dat datum als datetime staat, dag-maand-jaar formaat
+    df['Start Datum'] = pd.to_datetime(df['Start Datum'], dayfirst=True, errors='coerce')
+    
+    # Input datum ook omzetten
+    try:
+        play_week_date = pd.to_datetime(play_week, dayfirst=True, errors='coerce')
+    except Exception as e:
+        return {"error": f"Ongeldig datumformaat voor play_week: {str(e)}"}
 
-    play_week = pd.to_datetime(play_week, format='%d-%m-%Y').strftime('%d-%m-%Y')
+    # Filter op datum
+    df_filtered = df[df['Start Datum'] == play_week_date]
 
-    df_filtered = df[df['Start Datum'] == play_week]
+    if df_filtered.empty:
+        return {"message": "Geen data gevonden voor deze datum."}
 
+    # Fuzzy match op titel binnen gefilterde data
     best_match = process.extractOne(title, df_filtered['Titel'], scorer=fuzz.partial_ratio)
 
     if best_match and best_match[1] >= 70:
@@ -99,7 +109,6 @@ def search_boxoffice(play_week, title):
         return result[['Start Datum', 'Titel', 'BOR Rec.']].to_dict(orient='records')
 
     return {"message": "Geen boxoffice gevonden."}
-
 
 # Route voor bestand uploaden
 @app.route('/upload', methods=['POST'])

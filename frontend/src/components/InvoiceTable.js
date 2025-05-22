@@ -29,9 +29,9 @@ export default function InvoiceTable({ invoices }) {
       return 'gray';
     }
 
-    return foundBoxoffice < invoiceBoxoffice ? 'yellow' 
+    return foundBoxoffice < invoiceBoxoffice ? 'red' 
          : foundBoxoffice === invoiceBoxoffice ? 'green' 
-         : 'red';
+         : 'yellow';
   };
 
   const formatPercentage = (value) =>
