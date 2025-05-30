@@ -72,10 +72,11 @@ def search_boxoffice(play_week, title):
     except Exception as e:
         return {"error": f"Fout bij lezen van recettes-bestand: {str(e)}"}
 
-    df['Start Datum'] = pd.to_datetime(df['Start Datum'], dayfirst=True, errors='coerce')
+    # Normaliseer datums (verwijder tijd)
+    df['Start Datum'] = pd.to_datetime(df['Start Datum'], dayfirst=True, errors='coerce').dt.normalize()
 
     try:
-        play_week_date = pd.to_datetime(play_week, dayfirst=True, errors='coerce')
+        play_week_date = pd.to_datetime(play_week, dayfirst=True, errors='coerce').normalize()
     except Exception as e:
         return {"error": f"Ongeldig datumformaat voor play_week: {str(e)}"}
 
