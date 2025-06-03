@@ -25,9 +25,18 @@ def read_invoice(bestand):
         if kolom not in df.columns:
             return {"error": f"Kolom '{kolom}' ontbreekt in het bestand"}
 
-    df['play_week'] = pd.to_datetime(df['play_week'], errors='coerce').dt.strftime('%d-%m-%Y')
+    # Zet om naar datetime
+    df['play_week'] = pd.to_datetime(df['play_week'], errors='coerce')
+
+    # Sorteer op play_week (oud naar nieuw)
+    df = df.sort_values('play_week')
+
+    # Format voor we teruggeven
+    df['play_week'] = df['play_week'].dt.strftime('%d-%m-%Y')
+
     print(df['boxoffice'].head())
     return df[['frm_perc', 'master_title_description', 'play_week', 'boxoffice']].to_dict(orient='records')
+
 
 def clean_title(title):
     return re.sub(r"\s*\(.*?\)", "", title).strip()
