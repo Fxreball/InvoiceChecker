@@ -44,7 +44,7 @@ export default function InvoiceTable({ invoices }) {
     <div>
       <h2>Facturen</h2>
       {invoices.length === 0 ? (
-        <p>Geen facturen beschikbaar.</p>
+        <p>Nog geen facturen geüpload.</p>
       ) : (
         <table>
           <thead>

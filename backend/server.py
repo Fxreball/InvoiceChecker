@@ -12,35 +12,36 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Functie om de Excel-gegevens te laden
-def read_invoice(bestand):
+# Functie om facturen te laden
+def read_invoice(file):
     try:
-        df = pd.read_excel(bestand)
+        df = pd.read_excel(file)
         print(df.columns.tolist())
     except Exception as e:
         return {"error": f"Kan bestand niet laden: {str(e)}"}
 
-    kolommen_nodig = ['frm_perc', 'master_title_description', 'play_week', 'boxoffice']
-    for kolom in kolommen_nodig:
-        if kolom not in df.columns:
-            return {"error": f"Kolom '{kolom}' ontbreekt in het bestand"}
+    needed_columns = ['frm_perc', 'master_title_description', 'play_week', 'boxoffice']
+    for column in needed_columns:
+        if column not in df.columns:
+            return {"error": f"Kolom '{column}' ontbreekt in het bestand"}
 
     # Zet om naar datetime
     df['play_week'] = pd.to_datetime(df['play_week'], errors='coerce')
 
-    # Sorteer op play_week (oud naar nieuw)
+    # Sorteer op play_week
     df = df.sort_values('play_week')
 
-    # Format voor we teruggeven
+    # Formatteer play_week
     df['play_week'] = df['play_week'].dt.strftime('%d-%m-%Y')
 
-    print(df['boxoffice'].head())
+    # Return data als dictionary
     return df[['frm_perc', 'master_title_description', 'play_week', 'boxoffice']].to_dict(orient='records')
 
-
+# Functie om leestekens uit filmtitels te halen voor fuzzy-matching
 def clean_title(title):
     return re.sub(r"\s*\(.*?\)", "", title).strip()
 
+# Functie om het percentage van een specifieke film te zoeken
 def search_percentage(play_week, title):
     file = os.path.join(UPLOAD_FOLDER, 'percentages.xlsx')
 
@@ -69,6 +70,7 @@ def search_percentage(play_week, title):
 
     return {"message": "Geen resultaten gevonden."}
 
+# Functie om netto boxoffice te zoeken voor een specifieke film
 def search_boxoffice(play_week, title):
     file = os.path.join(UPLOAD_FOLDER, 'recettes.xlsx')
 
@@ -80,8 +82,8 @@ def search_boxoffice(play_week, title):
         df.columns = ['Start Datum', 'Titel', 'BOR Rec.']
     except Exception as e:
         return {"error": f"Fout bij lezen van recettes-bestand: {str(e)}"}
-
-    # Normaliseer datums (verwijder tijd)
+    
+    # Normaliseer datums
     df['Start Datum'] = pd.to_datetime(df['Start Datum'], dayfirst=True, errors='coerce').dt.normalize()
 
     try:
@@ -90,7 +92,7 @@ def search_boxoffice(play_week, title):
         return {"error": f"Ongeldig datumformaat voor play_week: {str(e)}"}
 
     if pd.isna(play_week_date):
-        return {"error": "Ongeldig of leeg datumformaat voor play_week."}
+        return {"error": "Ongeldig datumformaat voor play_week."}
 
     df_filtered = df[df['Start Datum'] == play_week_date]
 
@@ -106,6 +108,7 @@ def search_boxoffice(play_week, title):
 
     return {"message": "Geen boxoffice gevonden."}
 
+# Endpoint om het facturen bestand te uploaden
 @app.route('/upload', methods=['POST'])
 def upload_invoice():
     if 'file' not in request.files:
@@ -118,6 +121,7 @@ def upload_invoice():
     invoice_data = read_invoice(file)
     return jsonify(invoice_data)
 
+# Endpoint om het percentages bestand te uploaden
 @app.route('/upload-percentages', methods=['POST'])
 def upload_percentages():
     if 'file' not in request.files:
@@ -134,6 +138,7 @@ def upload_percentages():
     except Exception as e:
         return jsonify({"error": f"Kan bestand niet opslaan: {str(e)}"}), 500
 
+# Endpoint het recettes bestand te uploaden
 @app.route('/upload-recettes', methods=['POST'])
 def upload_recettes():
     if 'file' not in request.files:
@@ -150,6 +155,7 @@ def upload_recettes():
     except Exception as e:
         return jsonify({"error": f"Kan bestand niet opslaan: {str(e)}"}), 500
 
+# Endpoint om percentages en recettes met de films te matchen
 @app.route('/search', methods=['POST'])
 def search_endpoint():
     data = request.get_json()
@@ -188,6 +194,7 @@ def search_endpoint():
 
     return jsonify(results)
 
+# Endpoint om te checken wat de status van de API is.
 @app.route('/', methods=['GET'])
 def home():
     return "API is running! :)"
