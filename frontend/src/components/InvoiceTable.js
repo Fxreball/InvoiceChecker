@@ -29,9 +29,9 @@ export default function InvoiceTable({ invoices }) {
       return 'gray';
     }
 
-    return foundBoxoffice < invoiceBoxoffice ? 'yellow' 
+    return foundBoxoffice < invoiceBoxoffice ? 'red' 
          : foundBoxoffice === invoiceBoxoffice ? 'green' 
-         : 'red';
+         : 'yellow';
   };
 
   const formatPercentage = (value) =>
@@ -44,7 +44,7 @@ export default function InvoiceTable({ invoices }) {
     <div>
       <h2>Facturen</h2>
       {invoices.length === 0 ? (
-        <p>Geen facturen beschikbaar.</p>
+        <p>Nog geen facturen geüpload.</p>
       ) : (
         <table>
           <thead>
