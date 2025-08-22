@@ -177,9 +177,9 @@ def search_endpoint():
 
             # === percentage koppelen ===
             if isinstance(percentage_result, list) and percentage_result:
-                combined_result["found_percentage"] = percentage_result[0].get("percentage")
+                combined_result["percentage"] = percentage_result[0].get("percentage")
             else:
-                combined_result["found_percentage"] = "Niet gevonden"
+                combined_result["percentage"] = "Niet gevonden"
 
             # === boxoffice koppelen ===
             if isinstance(boxoffice_result, list) and boxoffice_result:
