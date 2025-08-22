@@ -170,18 +170,22 @@ def search_endpoint():
 
             combined_result = {
                 "play_week": play_week,
-                "title": title
+                "title": title,
+                "frm_perc": item.get("frm_perc"),
+                "boxoffice": item.get("boxoffice")
             }
 
+            # === percentage koppelen ===
             if isinstance(percentage_result, list) and percentage_result:
-                combined_result["percentage"] = percentage_result[0].get("percentage")
+                combined_result["found_percentage"] = percentage_result[0].get("percentage")
             else:
-                combined_result["percentage"] = "Niet gevonden"
+                combined_result["found_percentage"] = "Niet gevonden"
 
+            # === boxoffice koppelen ===
             if isinstance(boxoffice_result, list) and boxoffice_result:
-                combined_result["boxoffice"] = boxoffice_result[0].get("Flash Rec.")
+                combined_result["found_boxoffice"] = boxoffice_result[0].get("Flash Rec.")
             else:
-                combined_result["boxoffice"] = "Niet gevonden"
+                combined_result["found_boxoffice"] = "Niet gevonden"
 
             results.append(combined_result)
 
@@ -189,7 +193,6 @@ def search_endpoint():
             results.append({"error": "Ongeldige invoer", "data": item})
     
     return jsonify(results)
-
 
 @app.route('/', methods=['GET'])
 def home():
