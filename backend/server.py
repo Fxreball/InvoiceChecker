@@ -147,9 +147,9 @@ def search_endpoint():
 
             # Percentage uit bestand
             if percentage_result:
-                combined_result["found_percentage"] = percentage_result[0].get("percentage")
+                combined_result["percentage"] = percentage_result[0].get("percentage")
             else:
-                combined_result["found_percentage"] = "Niet gevonden"
+                combined_result["percentage"] = "Niet gevonden"
 
             # Boxoffice uit recettes
             if boxoffice_result:
