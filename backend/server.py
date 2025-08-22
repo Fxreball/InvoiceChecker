@@ -81,7 +81,7 @@ def search_boxoffice(play_week, title):
         return {"error": "Recettes-bestand niet gevonden."}
 
     try:
-        df = pd.read_excel(file, usecols=['Start Datum', 'Titel', 'BOR Rec.'])
+        df = pd.read_excel(file, usecols=['Start Datum', 'Titel', 'Flash Rec.'])
     except Exception as e:
         return {"error": f"Fout bij lezen van recettes-bestand: {str(e)}"}
 
@@ -96,7 +96,7 @@ def search_boxoffice(play_week, title):
     if best_match and best_match[1] >= 70:
         matched_title = best_match[0]
         result = df_filtered[df_filtered['Titel'] == matched_title]
-        return result[['Start Datum', 'Titel', 'BOR Rec.']].to_dict(orient='records')
+        return result[['Start Datum', 'Titel', 'Flash Rec.']].to_dict(orient='records')
 
     return {"message": "Geen boxoffice gevonden."}
 
@@ -179,7 +179,7 @@ def search_endpoint():
                 combined_result["percentage"] = "Niet gevonden"
 
             if isinstance(boxoffice_result, list) and boxoffice_result:
-                combined_result["boxoffice"] = boxoffice_result[0].get("BOR Rec.")
+                combined_result["boxoffice"] = boxoffice_result[0].get("Flash Rec.")
             else:
                 combined_result["boxoffice"] = "Niet gevonden"
 
