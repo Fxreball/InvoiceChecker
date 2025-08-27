@@ -4,6 +4,7 @@ import pandas as pd
 import re
 from rapidfuzz import fuzz, process
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -81,25 +82,37 @@ def search_boxoffice(play_week, title):
         return {"error": "Recettes-bestand niet gevonden."}
 
     try:
-        df = pd.read_excel(file, usecols=['Start Datum', 'Titel', 'BOR Rec.'])
+        df = pd.read_excel(file, usecols=['Start Datum', 'Titel', 'Flash Rec.', 'Bioscoop'])
     except Exception as e:
-        return {"error": f"Fout bij lezen van recettes-bestand: {str(e)}"}
+        return {"error": f"Fout bij lezen van bestand: {str(e)}"}
 
-    df['Start Datum'] = pd.to_datetime(df['Start Datum'], errors='coerce').dt.strftime('%d-%m-%Y')
+    # Zorg dat Start Datum en play_week beiden strings in dd-mm-YYYY zijn
+    df['Start Datum'] = df['Start Datum'].astype(str).str.strip()
+    play_week = play_week.strip()
 
-    play_week = pd.to_datetime(play_week, format='%d-%m-%Y').strftime('%d-%m-%Y')
+    # Filter op Start Datum, Bioscoop = Foroxity Sittard en Flash Rec. niet leeg
+    df_filtered = df[
+        (df['Start Datum'] == play_week) &
+        (df['Bioscoop'].str.strip() == 'Foroxity Sittard') &
+        (df['Flash Rec.'].notna())
+    ].copy()  # kopie maken om SettingWithCopyWarning te voorkomen
 
-    df_filtered = df[df['Start Datum'] == play_week]
+    if df_filtered.empty:
+        return {"message": "Geen resultaten gevonden."}
 
-    best_match = process.extractOne(title, df_filtered['Titel'], scorer=fuzz.partial_ratio)
+    # Titel cleanen (case-insensitive, spaties verwijderen)
+    df_filtered['Titel_clean'] = df_filtered['Titel'].str.strip().str.lower()
+    title_clean = title.strip().lower()
 
-    if best_match and best_match[1] >= 70:
+    # Fuzzy matchen op titel
+    best_match = process.extractOne(title_clean, df_filtered['Titel_clean'], scorer=fuzz.partial_ratio)
+
+    if best_match and best_match[1] >= 70:  # drempel van 70%
         matched_title = best_match[0]
-        result = df_filtered[df_filtered['Titel'] == matched_title]
-        return result[['Start Datum', 'Titel', 'BOR Rec.']].to_dict(orient='records')
+        result = df_filtered[df_filtered['Titel_clean'] == matched_title]
+        return result[['Start Datum', 'Titel', 'Flash Rec.']].to_dict(orient='records')
 
-    return {"message": "Geen boxoffice gevonden."}
-
+    return {"message": "Geen resultaten gevonden."}
 
 # Route voor bestand uploaden
 @app.route('/upload', methods=['POST'])
@@ -174,14 +187,14 @@ def search_endpoint():
             }
 
             if isinstance(percentage_result, list) and percentage_result:
-                combined_result["percentage"] = percentage_result[0].get("percentage")
+                combined_result["found_percentage"] = percentage_result[0].get("percentage")
             else:
-                combined_result["percentage"] = "Niet gevonden"
+                combined_result["found_percentage"] = "Niet gevonden"
 
             if isinstance(boxoffice_result, list) and boxoffice_result:
-                combined_result["boxoffice"] = boxoffice_result[0].get("BOR Rec.")
+                combined_result["found_boxoffice"] = boxoffice_result[0].get("Flash Rec.")
             else:
-                combined_result["boxoffice"] = "Niet gevonden"
+                combined_result["found_boxoffice"] = "Niet gevonden"
 
             results.append(combined_result)
 
