@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import FileUploaderInvoice from './components/FileUploaderInvoice';
 import FileUploaderPercentage from './components/FileUploaderPercentage';
-import FileUploaderMaccs from './components/FileUploaderMaccs'; // Toegevoegd: uploader voor recettes
+import FileUploaderMaccs from './components/FileUploaderMaccs';
 import InvoiceTable from './components/InvoiceTable';
 import CheckButton from './components/CheckButton';
 
@@ -12,7 +12,7 @@ function App() {
   const [invoices, setInvoices] = useState([]);
 
   const handleFileUploadSuccess = (data) => {
-    setInvoices(data);
+    setInvoices(data); // originele invoices
   };
 
   const handlePercentageUploadSuccess = (data) => {
@@ -25,26 +25,27 @@ function App() {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch("https://api.owencoenraad.nl/search", {
+      const response = await fetch("http://localhost:5000/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(invoices),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
-        setInvoices(prevInvoices => {
-          return prevInvoices.map((invoice, index) => {
+        // Voeg found_percentage en found_boxoffice toe aan invoices
+        setInvoices(prevInvoices =>
+          prevInvoices.map((invoice, index) => {
             const foundData = data[index];
             return {
               ...invoice,
-              found_percentage: foundData?.percentage || 'Niet gevonden',
-              found_boxoffice: foundData?.boxoffice || 'Niet gevonden', // Hier voeg je de gevonden boxoffice toe
+              found_percentage: foundData?.found_percentage ?? 'Niet gevonden',
+              found_boxoffice: foundData?.found_boxoffice ?? 'Niet gevonden',
             };
-          });
-        });
+          })
+        );
       } else {
         alert("Er is iets misgegaan bij het zoeken.");
       }
@@ -53,7 +54,6 @@ function App() {
       alert("Er is iets misgegaan bij het zoeken.");
     }
   };
-  
 
   return (
     <div>
