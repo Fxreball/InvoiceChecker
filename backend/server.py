@@ -4,7 +4,6 @@ import pandas as pd
 import re
 from rapidfuzz import fuzz, process
 import os
-from datetime import datetime
 
 app = Flask(__name__)
 
@@ -23,7 +22,7 @@ def read_invoice(bestand):
         return {"error": f"Kan bestand niet laden: {str(e)}"}
 
     # Benodigde kolommen
-    kolommen_nodig = ['frm_perc', 'master_title_description', 'play_week', 'boxoffice']
+    kolommen_nodig = ['frm_perc', 'master_title_description', 'play_week', 'boxoffice', 'code_description_cinema']
     
     # Controleer of alle kolommen aanwezig zijn
     for kolom in kolommen_nodig:
@@ -36,7 +35,7 @@ def read_invoice(bestand):
     print(df['boxoffice'].head())
 
     # Selecteer en retourneer de data als JSON
-    return df[['frm_perc', 'master_title_description', 'play_week', 'boxoffice']].to_dict(orient='records')
+    return df[['frm_perc', 'master_title_description', 'play_week', 'boxoffice', 'code_description_cinema']].to_dict(orient='records')
 
 def clean_title(title):
     """ Verwijdert haakjes en hun inhoud uit de titel """
@@ -75,7 +74,7 @@ def search_percentage(play_week, title):
 
     return {"message": "Geen resultaten gevonden."}
 
-def search_boxoffice(play_week, title):
+def search_boxoffice(play_week, title, cinema_location):
     file = os.path.join(UPLOAD_FOLDER, 'recettes.xlsx')
 
     if not os.path.exists(file):
@@ -90,29 +89,28 @@ def search_boxoffice(play_week, title):
     df['Start Datum'] = df['Start Datum'].astype(str).str.strip()
     play_week = play_week.strip()
 
-    # Filter op Start Datum, Bioscoop = Foroxity Sittard en Flash Rec. niet leeg
+    # Filter nu alleen op de bioscoop die in de factuur staat
     df_filtered = df[
         (df['Start Datum'] == play_week) &
-        (df['Bioscoop'].str.strip() == 'Foroxity Sittard') &
+        (df['Bioscoop'].str.strip().str.lower() == cinema_location.strip().lower()) &
         (df['Flash Rec.'].notna())
-    ].copy()  # kopie maken om SettingWithCopyWarning te voorkomen
+    ].copy()
 
     if df_filtered.empty:
         return {"message": "Geen resultaten gevonden."}
 
-    # Titel cleanen (case-insensitive, spaties verwijderen)
     df_filtered['Titel_clean'] = df_filtered['Titel'].str.strip().str.lower()
     title_clean = title.strip().lower()
 
-    # Fuzzy matchen op titel
     best_match = process.extractOne(title_clean, df_filtered['Titel_clean'], scorer=fuzz.partial_ratio)
 
-    if best_match and best_match[1] >= 70:  # drempel van 70%
+    if best_match and best_match[1] >= 70:
         matched_title = best_match[0]
         result = df_filtered[df_filtered['Titel_clean'] == matched_title]
-        return result[['Start Datum', 'Titel', 'Flash Rec.']].to_dict(orient='records')
+        return result[['Start Datum', 'Titel', 'Flash Rec.', 'Bioscoop']].to_dict(orient='records')
 
     return {"message": "Geen resultaten gevonden."}
+
 
 # Route voor bestand uploaden
 @app.route('/upload', methods=['POST'])
@@ -176,15 +174,18 @@ def search_endpoint():
     for item in data:
         title = item.get('master_title_description')
         play_week = item.get('play_week')
+        cinema_location = item.get('code_description_cinema')
 
-        if title and play_week:
+        if title and play_week and cinema_location:
             percentage_result = search_percentage(play_week, title)
-            boxoffice_result = search_boxoffice(play_week, title)
+            boxoffice_result = search_boxoffice(play_week, title, cinema_location)
 
             combined_result = {
                 "play_week": play_week,
-                "title": title
+                "title": title,
+                "location": cinema_location
             }
+
 
             if isinstance(percentage_result, list) and percentage_result:
                 combined_result["found_percentage"] = percentage_result[0].get("percentage")
