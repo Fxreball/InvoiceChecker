@@ -1,4 +1,3 @@
-import React from 'react';
 import './CheckButton.css';
 
 function CheckButton({ onSearch }) {

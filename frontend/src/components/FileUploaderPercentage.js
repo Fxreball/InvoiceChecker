@@ -14,7 +14,7 @@ export default function PercentageUploader({ onFileUploadSuccess }) {
 
   const handleFileUpload = useCallback(async () => {
     if (!file) {
-      return; // Geen bestand, geen upload
+      return;
     }
 
     const formData = new FormData();
@@ -28,7 +28,7 @@ export default function PercentageUploader({ onFileUploadSuccess }) {
 
       if (response.ok) {
         const data = await response.json();
-        onFileUploadSuccess(data); // Gegevens naar parent component sturen
+        onFileUploadSuccess(data);
       } else {
         alert("Er is iets misgegaan bij het uploaden.");
       }
@@ -36,14 +36,13 @@ export default function PercentageUploader({ onFileUploadSuccess }) {
       console.error("Error tijdens bestand upload:", error);
       alert("Er is iets misgegaan bij het uploaden.");
     }
-  }, [file, onFileUploadSuccess]); // Voeg 'file' en 'onFileUploadSuccess' toe als afhankelijkheden
+  }, [file, onFileUploadSuccess]);
 
   useEffect(() => {
-    // Als er een bestand is geselecteerd, wordt automatisch geüpload
     if (file) {
       handleFileUpload();
     }
-  }, [file, handleFileUpload]); // Voeg 'handleFileUpload' toe aan de afhankelijkhedenlijst
+  }, [file, handleFileUpload]);
 
   return (
     <div className="file-uploader-container">
