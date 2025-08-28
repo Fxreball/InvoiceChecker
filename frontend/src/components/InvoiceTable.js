@@ -29,9 +29,9 @@ export default function InvoiceTable({ invoices }) {
       return 'gray';
     }
 
-    return foundBoxoffice < invoiceBoxoffice ? 'yellow' 
+    return foundBoxoffice < invoiceBoxoffice ? 'red' 
          : foundBoxoffice === invoiceBoxoffice ? 'green' 
-         : 'red';
+         : 'yellow';
   };
 
   const formatPercentage = (value) =>
@@ -44,13 +44,14 @@ export default function InvoiceTable({ invoices }) {
     <div>
       <h2>Facturen</h2>
       {invoices.length === 0 ? (
-        <p>Geen facturen beschikbaar.</p>
+        <p>Nog geen facturen geüpload.</p>
       ) : (
         <table>
           <thead>
             <tr>
               <th>Titel</th>
               <th>Speelweek</th>
+              <th>Locatie</th>
               <th>Factuur percentage</th>
               <th>Werkelijk percentage</th>
               <th>Factuur Box office</th>
@@ -62,6 +63,7 @@ export default function InvoiceTable({ invoices }) {
               <tr key={index}>
                 <td>{invoice.master_title_description || 'N/A'}</td>
                 <td>{invoice.play_week || 'N/A'}</td>
+                <td>{invoice.code_description_cinema || 'N/A'}</td>
                 <td>{formatPercentage(invoice.frm_perc) || 'N/A'}</td>
                 <td className={getCellClass(invoice)}>
                   {formatPercentage(invoice.found_percentage) || 'Nog te controleren'}

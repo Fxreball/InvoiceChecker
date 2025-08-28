@@ -23,7 +23,7 @@ export default function FileUploader({ onFileUploadSuccess }) {
 
   const handleFileUpload = async () => {
     if (!file) {
-      return; // Geen bestand, geen upload
+      return; 
     }
 
     const formData = new FormData();
@@ -37,7 +37,7 @@ export default function FileUploader({ onFileUploadSuccess }) {
 
       if (response.ok) {
         const data = await response.json();
-        onFileUploadSuccess(data); // Gegevens naar parent component sturen
+        onFileUploadSuccess(data);
       } else {
         alert("Er is iets misgegaan bij het uploaden.");
       }
